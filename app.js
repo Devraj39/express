@@ -1,38 +1,63 @@
 const express = require('express');
 const app = express();
-const name = "user";
 
-app.set("view engine", "ejs");
-app.get('/', (req, res) => {
-    res.send("Hello");
-});
+const mdb = require('./modules/db'); // adjust path if needed
 
-app.get('/Home', (req, res) => {
-    const students = ["Dev", "Raj", "Singh"];
+// // useing ejs
+// app.set("view engine", "ejs");
 
-    res.render('home', { 
-        name: " ",
-        students: students
-    });
-});
 
-const authMiddleware = (req, res, next) => {
-    console.log("Auth middleware triggered");
+// initialization
+mdb();
 
-    const isLoggedIn = true; 
+app.use(express.json());
 
-    if (!isLoggedIn) {
-        return res.send("Unauthorized");
-    }
 
-    next();
-};
+const message = {
+    header: {title: "GLA"},
+    content: {data: "Here is my data"},
+    footer: {createdBy: "Dev"}
+}
 
-const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-
-
+const employeeRoutes = require('./routes/employeeRoutes');
+app.use('/',userRoutes)
 app.use('/users', userRoutes);
-app.use('/login',authMiddleware, authRoutes);
+
+app.use("/employees",employeeRoutes);
+
+
+// app.get('/home', (req, res) => {
+//     const students = ["Dev", "Raj", "Singh"];
+
+//     res.status(200).render('home', { 
+
+//         name: "Dev",
+//         students: students,
+//         ...message
+//     });
+// });
+
+// app.get('/header', (req, res) => {
+//     res.render('header');
+// });
+
+// const authMiddleware = (req, res, next) => {
+//     console.log("Auth middleware triggered");
+
+//     const isLoggedIn = true;
+
+//     if (!isLoggedIn) {
+//         return res.send("Unauthorized");
+//     }
+
+//     next();
+// };
+
+// const authRoutes = require('./routes/authRoutes');
+
+// app.use('/login', authRoutes);
 
 module.exports = app;
+
+
